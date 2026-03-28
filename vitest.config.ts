@@ -16,6 +16,13 @@ export default defineConfig({
         '**/*.spec.ts',
         'vitest.config.ts',
         'tsup.config.ts',
+        // Placeholder modules not yet implemented in this PR
+        'src/openapi/**',
+        'src/webhooks/**',
+        // Re-export barrel files — nothing to unit test here
+        'src/index.ts',
+        'src/middleware/index.ts',
+        'src/routes/index.ts',  // registerRoutes is covered via plugin integration tests
       ],
     },
     testTimeout: 30000,

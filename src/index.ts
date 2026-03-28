@@ -27,6 +27,9 @@ export type {
   IntrospectionChangeHandler,
 } from './introspection/index.js';
 
-// Placeholder exports — implemented in subsequent PRs
-// export { autoRest } from './routes/index.js';
+// Plugin — public API
+export { autoRest } from './plugin.js';
+export type { AutoRestOptions } from './plugin.js';
+
+// Placeholder for OpenAPI — implemented in subsequent PR
 // export { generateOpenApiSpec } from './openapi/index.js';
