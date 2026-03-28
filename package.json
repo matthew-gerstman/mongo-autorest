@@ -1,0 +1,53 @@
+{
+  "name": "mongo-autorest",
+  "version": "0.1.0",
+  "description": "Auto-generate RESTful APIs from MongoDB collections via Fastify",
+  "author": "Matthew Gerstman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthew-gerstman/mongo-autorest.git"
+  },
+  "keywords": ["mongodb", "fastify", "rest", "api", "auto", "introspection"],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^8.15.0",
+    "@fastify/swagger-ui": "^4.1.0",
+    "fastify": "^4.28.1",
+    "mongodb": "^6.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "@types/node": "^20.17.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "mongodb-memory-server": "^10.1.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.9"
+  }
+}
