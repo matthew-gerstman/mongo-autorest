@@ -7,6 +7,7 @@ import { registerRoutes } from './routes/index.js';
 import { errorHandler } from './middleware/errors.js';
 import { AutoRestEventEmitter } from './webhooks/events.js';
 import { registerWebhookListeners } from './webhooks/delivery.js';
+import { registerOpenApiRoutes } from './openapi/index.js';
 
 export interface AutoRestOptions {
   /** MongoDB connection string */
@@ -95,9 +96,6 @@ const autoRestPlugin: FastifyPluginAsync<AutoRestOptions> = async (
   const collectionNames = collections.map((c) => c.name);
 
   // Mount per-collection routes under the prefix using a scoped child plugin.
-  // Using fastify.register here with { prefix } creates a properly isolated scope.
-  // Since this plugin itself is wrapped with fastify-plugin (non-encapsulating),
-  // the setErrorHandler above applies globally; the route prefix is additive.
   await fastify.register(
     async (scopedPlugin: FastifyInstance) => {
       await registerRoutes(scopedPlugin, {
@@ -109,6 +107,14 @@ const autoRestPlugin: FastifyPluginAsync<AutoRestOptions> = async (
     },
     { prefix }
   );
+
+  // Register /openapi.json and optional Swagger UI
+  await registerOpenApiRoutes(fastify, {
+    db,
+    config,
+    collections,
+    prefix,
+  });
 };
 
 // Export without encapsulation so decorators/hooks propagate to the parent scope

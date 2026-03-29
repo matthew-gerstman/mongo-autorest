@@ -41,3 +41,7 @@ export type {
   EventType,
   WebhookPayload,
 } from './webhooks/index.js';
+
+// OpenAPI spec generation — public API
+export { generateOpenApiSpec, registerOpenApiRoutes, inferCollectionSchema } from './openapi/index.js';
+export type { OpenApiSpec, GenerateOpenApiSpecOptions } from './openapi/index.js';
