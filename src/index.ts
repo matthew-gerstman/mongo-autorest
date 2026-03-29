@@ -45,3 +45,12 @@ export type {
 // OpenAPI spec generation — public API
 export { generateOpenApiSpec, registerOpenApiRoutes, inferCollectionSchema } from './openapi/index.js';
 export type { OpenApiSpec, GenerateOpenApiSpecOptions } from './openapi/index.js';
+
+// Explorer — public API
+export { registerExplorerRoutes } from './explorer/index.js';
+export type {
+  RegisterExplorerRoutesOptions,
+  CollectionManifest,
+  CollectionManifestEntry,
+} from './explorer/index.js';
+export type { ExplorerOptions } from './config/index.js';

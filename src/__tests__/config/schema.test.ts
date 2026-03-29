@@ -3,6 +3,7 @@ import {
   validateConfig,
   ConfigValidationError,
   getDefaultPageSize,
+  ExplorerOptionsSchema,
   resolveCollectionSlug,
   isCollectionExcluded,
   isCollectionReadOnly,
@@ -195,5 +196,69 @@ describe('isCollectionReadOnly', () => {
       collections: { internal: { readOnly: true } },
     };
     expect(isCollectionReadOnly('internal', config)).toBe(true);
+  });
+});
+
+describe('ExplorerOptions schema', () => {
+  it('accepts valid theme values', () => {
+    expect(ExplorerOptionsSchema.parse({ theme: 'auto' }).theme).toBe('auto');
+    expect(ExplorerOptionsSchema.parse({ theme: 'light' }).theme).toBe('light');
+    expect(ExplorerOptionsSchema.parse({ theme: 'dark' }).theme).toBe('dark');
+  });
+
+  it('rejects invalid theme values', () => {
+    expect(() => ExplorerOptionsSchema.parse({ theme: 'solarized' })).toThrow();
+  });
+
+  it('accepts valid defaultPageSize values', () => {
+    expect(ExplorerOptionsSchema.parse({ defaultPageSize: 25 }).defaultPageSize).toBe(25);
+    expect(ExplorerOptionsSchema.parse({ defaultPageSize: 50 }).defaultPageSize).toBe(50);
+    expect(ExplorerOptionsSchema.parse({ defaultPageSize: 100 }).defaultPageSize).toBe(100);
+  });
+
+  it('rejects invalid defaultPageSize values', () => {
+    expect(() => ExplorerOptionsSchema.parse({ defaultPageSize: 10 })).toThrow();
+    expect(() => ExplorerOptionsSchema.parse({ defaultPageSize: 200 })).toThrow();
+  });
+
+  it('applies default theme of "auto"', () => {
+    const result = ExplorerOptionsSchema.parse({});
+    expect(result.theme).toBe('auto');
+  });
+
+  it('applies default defaultPageSize of 25', () => {
+    const result = ExplorerOptionsSchema.parse({});
+    expect(result.defaultPageSize).toBe(25);
+  });
+
+  it('accepts optional title', () => {
+    const result = ExplorerOptionsSchema.parse({ title: 'My API' });
+    expect(result.title).toBe('My API');
+  });
+
+  it('title is optional and undefined when not provided', () => {
+    const result = ExplorerOptionsSchema.parse({});
+    expect(result.title).toBeUndefined();
+  });
+
+  it('validateConfig accepts explorer boolean field', () => {
+    const result = validateConfig({ explorer: true });
+    expect(result.explorer).toBe(true);
+    const result2 = validateConfig({ explorer: false });
+    expect(result2.explorer).toBe(false);
+  });
+
+  it('validateConfig accepts explorerOptions', () => {
+    const result = validateConfig({
+      explorerOptions: { theme: 'dark', defaultPageSize: 50, title: 'Test' },
+    });
+    expect(result.explorerOptions?.theme).toBe('dark');
+    expect(result.explorerOptions?.defaultPageSize).toBe(50);
+    expect(result.explorerOptions?.title).toBe('Test');
+  });
+
+  it('explorerOptions is optional', () => {
+    const result = validateConfig({});
+    expect(result.explorerOptions).toBeUndefined();
   });
 });

@@ -8,6 +8,7 @@ import { errorHandler } from './middleware/errors.js';
 import { AutoRestEventEmitter } from './webhooks/events.js';
 import { registerWebhookListeners } from './webhooks/delivery.js';
 import { registerOpenApiRoutes } from './openapi/index.js';
+import { registerExplorerRoutes } from './explorer/index.js';
 
 export interface AutoRestOptions {
   /** MongoDB connection string */
@@ -110,6 +111,14 @@ const autoRestPlugin: FastifyPluginAsync<AutoRestOptions> = async (
 
   // Register /openapi.json and optional Swagger UI
   await registerOpenApiRoutes(fastify, {
+    db,
+    config,
+    collections,
+    prefix,
+  });
+
+  // Register /explorer and /explorer-api/collections
+  await registerExplorerRoutes(fastify, {
     db,
     config,
     collections,
