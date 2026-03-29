@@ -2,6 +2,7 @@ import { type FastifyInstance, type FastifyRequest, type FastifyReply } from 'fa
 import { type Db, type Filter, type Document, ObjectId } from 'mongodb';
 import { type AutoRestConfig } from '../config/index.js';
 import { getDefaultPageSize } from '../config/index.js';
+import { type AutoRestEventEmitter } from '../webhooks/events.js';
 
 // ─── ID coercion ─────────────────────────────────────────────────────────────
 
@@ -46,7 +47,8 @@ export function registerCrudRoutes(
   collectionName: string,
   _slug: string,
   config: AutoRestConfig,
-  readOnly: boolean
+  readOnly: boolean,
+  emitter?: AutoRestEventEmitter
 ): void {
   const col = db.collection(collectionName);
   const defaultPageSize = getDefaultPageSize(config);
@@ -177,6 +179,15 @@ export function registerCrudRoutes(
       const body = req.body ?? {};
       const result = await col.insertOne(body as Document);
       const inserted = await col.findOne({ _id: result.insertedId });
+
+      // Emit after successful DB op
+      if (emitter && inserted) {
+        emitter.emit('document.created', {
+          collection: collectionName,
+          document: inserted as Record<string, unknown>,
+        });
+      }
+
       return reply.code(201).send(inserted);
     }
   );
@@ -201,6 +212,16 @@ export function registerCrudRoutes(
       }
 
       const updated = await col.findOne(filter);
+
+      // Emit after successful DB op
+      if (emitter) {
+        emitter.emit('document.updated', {
+          collection: collectionName,
+          id,
+          changes: replacement,
+        });
+      }
+
       return reply.code(200).send(updated);
     }
   );
@@ -222,6 +243,16 @@ export function registerCrudRoutes(
       }
 
       const updated = await col.findOne(filter);
+
+      // Emit after successful DB op
+      if (emitter) {
+        emitter.emit('document.updated', {
+          collection: collectionName,
+          id,
+          changes: body,
+        });
+      }
+
       return reply.code(200).send(updated);
     }
   );
@@ -236,6 +267,14 @@ export function registerCrudRoutes(
       const result = await col.deleteOne(filter);
       if (result.deletedCount === 0) {
         return reply.code(404).send({ error: 'Not found', id });
+      }
+
+      // Emit after successful DB op
+      if (emitter) {
+        emitter.emit('document.deleted', {
+          collection: collectionName,
+          id,
+        });
       }
 
       return reply.code(204).send();
