@@ -17,7 +17,7 @@ export const ALLOWED_OPERATORS = new Set([
   // Element
   '$exists',
   // Evaluation
-  '$regex', '$text',
+  '$regex', '$options', '$text',
   // $text sub-operators (appear nested under $text key)
   '$search', '$language', '$caseSensitive', '$diacriticSensitive',
 ]);
