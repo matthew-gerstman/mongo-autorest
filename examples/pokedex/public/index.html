@@ -1307,7 +1307,7 @@ async function loadPokemon(page = state.page) {
   const params = new URLSearchParams({
     page,
     pageSize: state.pageSize,
-    sort: (state.sortDir === 'desc' ? '-' : '') + state.sortField,
+    sort: (state.sortDir === -1 ? '-' : '') + state.sortField,
   });
 
   if (state.search) {
@@ -1542,7 +1542,7 @@ async function openModal(pokedexId) {
 
   try {
     // Fetch from the aliased endpoint
-    const res = await apiFetch(`/api/pokedex?pokedexId=${pokedexId}&pageSize=1`);
+    const res = await apiFetch(`/api/pokedex?filter=${encodeURIComponent(JSON.stringify({pokedexId}))}&pageSize=1`);
     const p = res.data[0];
     if (!p) throw new Error('Not found');
     renderModal(p);
