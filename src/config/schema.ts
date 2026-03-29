@@ -1,5 +1,17 @@
 import { z } from 'zod';
 
+export const ExplorerOptionsSchema = z.object({
+  title: z.string().optional(),
+  theme: z.enum(['auto', 'light', 'dark']).default('auto'),
+  defaultPageSize: z.union([
+    z.literal(25),
+    z.literal(50),
+    z.literal(100),
+  ]).default(25),
+});
+
+export type ExplorerOptions = z.infer<typeof ExplorerOptionsSchema>;
+
 const AuthConfigSchema = z.object({
   type: z.literal('api-key'),
   header: z.string().default('x-api-key'),
@@ -55,6 +67,8 @@ export const AutoRestConfigSchema = z.object({
   useFastCount: z.boolean().optional(),
   serveOpenApi: z.boolean().optional(),
   swaggerUi: z.boolean().optional(),
+  explorer: z.boolean().optional(),
+  explorerOptions: ExplorerOptionsSchema.optional(),
   webhooks: z.array(WebhookConfigSchema).optional(),
 });
 

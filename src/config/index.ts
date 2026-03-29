@@ -1,8 +1,8 @@
 import { ZodError } from 'zod';
-import { AutoRestConfigSchema, type AutoRestConfig } from './schema.js';
+import { AutoRestConfigSchema, ExplorerOptionsSchema, type AutoRestConfig } from './schema.js';
 
-export { AutoRestConfigSchema };
-export type { AutoRestConfig, AuthConfig, CollectionOverride, WebhookConfig } from './schema.js';
+export { AutoRestConfigSchema, ExplorerOptionsSchema };
+export type { AutoRestConfig, AuthConfig, CollectionOverride, WebhookConfig, ExplorerOptions } from './schema.js';
 
 /**
  * Thrown when the AutoRestConfig fails Zod validation at startup.
