@@ -31,5 +31,13 @@ export type {
 export { autoRest } from './plugin.js';
 export type { AutoRestOptions } from './plugin.js';
 
-// Placeholder for OpenAPI — implemented in subsequent PR
-// export { generateOpenApiSpec } from './openapi/index.js';
+// Webhook / EventEmitter — public API
+export { AutoRestEventEmitter, autoRestEmitter } from './webhooks/index.js';
+export type {
+  DocumentCreatedPayload,
+  DocumentUpdatedPayload,
+  DocumentDeletedPayload,
+  AutoRestEventMap,
+  EventType,
+  WebhookPayload,
+} from './webhooks/index.js';

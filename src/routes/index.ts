@@ -8,11 +8,13 @@ import {
 } from '../config/index.js';
 import { createAuthHook } from '../middleware/auth.js';
 import { registerCrudRoutes } from './crud.js';
+import { type AutoRestEventEmitter } from '../webhooks/events.js';
 
 export interface RouteGeneratorOptions {
   db: Db;
   config: AutoRestConfig;
   collectionNames: string[];
+  emitter?: AutoRestEventEmitter;
 }
 
 /**
@@ -29,7 +31,7 @@ export async function registerRoutes(
   fastify: FastifyInstance,
   options: RouteGeneratorOptions
 ): Promise<void> {
-  const { db, config, collectionNames } = options;
+  const { db, config, collectionNames, emitter } = options;
 
   for (const collectionName of collectionNames) {
     // Skip excluded collections (system.* + config.exclude)
@@ -58,7 +60,7 @@ export async function registerRoutes(
           collectionPlugin.addHook('onRequest', createAuthHook(effectiveAuth));
         }
 
-        registerCrudRoutes(collectionPlugin, db, collectionName, slug, config, readOnly);
+        registerCrudRoutes(collectionPlugin, db, collectionName, slug, config, readOnly, emitter);
       },
       { prefix: `/${slug}` }  // Fastify already carries the root prefix — just add the slug
     );
