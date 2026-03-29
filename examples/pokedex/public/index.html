@@ -1289,7 +1289,7 @@ async function apiFetch(path, opts = {}) {
 // ======================================================
 async function loadTypes() {
   try {
-    const res = await apiFetch('/api/types?limit=18');
+    const res = await apiFetch('/api/types?pageSize=18');
     state.types = res.data || [];
   } catch(e) {
     console.warn('Could not load types', e);
@@ -1306,21 +1306,54 @@ async function loadPokemon(page = state.page) {
 
   const params = new URLSearchParams({
     page,
-    limit: state.pageSize,
-    sort: state.sortField,
-    sortDir: state.sortDir,
+    pageSize: state.pageSize,
+    sort: (state.sortDir === 'desc' ? '-' : '') + state.sortField,
   });
 
-  if (state.search) params.set('search', state.search);
+  if (state.search) {
+    // Names are Title Case in DB, so capitalize first letter for regex
+    const term = state.search.charAt(0).toUpperCase() + state.search.slice(1).toLowerCase();
+    const searchFilter = JSON.stringify({ name: { "$regex": term } });
+    params.set('filter', searchFilter);
+  }
   if (state.filterType) params.set('primaryType', state.filterType);
-  if (state.filterGen) params.set('generation', state.filterGen);
-  if (state.filterLegendary) params.set('isLegendary', 'true');
-  if (state.filterMythical) params.set('isMythical', 'true');
+  if (state.filterGen) {
+    // generation is a number in DB; flat params send strings, so use explicit filter
+    const genFilter = JSON.stringify({ generation: Number(state.filterGen) });
+    // Merge with existing filter if search is active
+    if (params.has('filter')) {
+      const existing = JSON.parse(params.get('filter'));
+      const merged = { "$and": [existing, { generation: Number(state.filterGen) }] };
+      params.set('filter', JSON.stringify(merged));
+    } else {
+      params.set('filter', genFilter);
+    }
+  }
+  if (state.filterLegendary) {
+    const legFilter = { isLegendary: true };
+    if (params.has('filter')) {
+      const existing = JSON.parse(params.get('filter'));
+      const merged = existing['$and'] ? { '$and': [...existing['$and'], legFilter] } : { '$and': [existing, legFilter] };
+      params.set('filter', JSON.stringify(merged));
+    } else {
+      params.set('filter', JSON.stringify(legFilter));
+    }
+  }
+  if (state.filterMythical) {
+    const mythFilter = { isMythical: true };
+    if (params.has('filter')) {
+      const existing = JSON.parse(params.get('filter'));
+      const merged = existing['$and'] ? { '$and': [...existing['$and'], mythFilter] } : { '$and': [existing, mythFilter] };
+      params.set('filter', JSON.stringify(merged));
+    } else {
+      params.set('filter', JSON.stringify(mythFilter));
+    }
+  }
 
   try {
     const res = await apiFetch(`/api/pokedex?${params}`);
     state.pokemon = res.data || [];
-    state.total = res.total || 0;
+    state.total = (res.pagination && res.pagination.total) || 0;
     state.page = page;
     renderGrid();
     renderPagination();
@@ -1509,7 +1542,7 @@ async function openModal(pokedexId) {
 
   try {
     // Fetch from the aliased endpoint
-    const res = await apiFetch(`/api/pokedex?pokedexId=${pokedexId}&limit=1`);
+    const res = await apiFetch(`/api/pokedex?pokedexId=${pokedexId}&pageSize=1`);
     const p = res.data[0];
     if (!p) throw new Error('Not found');
     renderModal(p);
@@ -1862,7 +1895,7 @@ async function loadBattleLog() {
   el.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
 
   try {
-    const res = await apiFetch('/api/battles?limit=20&sort=timestamp&sortDir=-1', { auth: true });
+    const res = await apiFetch('/api/battles?pageSize=20&sort=-timestamp', { auth: true });
     const battles = res.data || [];
 
     if (!battles.length) {
