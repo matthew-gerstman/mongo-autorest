@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GERSTMAN'S RECORDS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --tower-yellow: #FFD700;
+    --tower-red: #E3242B;
+    --tower-black: #1a1a1a;
+    --tower-dark: #0d0d0d;
+    --tower-white: #f5f0e8;
+    --tower-cream: #faf6ee;
+    --tower-orange: #FF6B35;
+    --tower-pink: #FF1493;
+    --tower-blue: #00BFFF;
+    --tower-green: #39FF14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--tower-dark);
+    color: var(--tower-white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: var(--tower-red);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 3px solid var(--tower-yellow);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 4px;
+    color: var(--tower-yellow);
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+    line-height: 1;
+  }
+
+  .logo span {
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 8px;
+    color: white;
+    font-weight: 400;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--tower-yellow);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.9;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-api {
+    background: var(--tower-yellow);
+    color: var(--tower-black);
+    border: none;
+    padding: 8px 16px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .btn-api:hover {
+    background: white;
+    transform: translateY(-1px);
+  }
+
+  /* === SEARCH & FILTERS BAR === */
+  .filter-bar {
+    background: var(--tower-black);
+    border-bottom: 2px solid #333;
+    padding: 12px 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    color: var(--tower-white);
+    padding: 10px 16px 10px 40px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: var(--tower-yellow);
+  }
+
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+  }
+
+  .filter-select {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    color: var(--tower-white);
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    outline: none;
+    min-width: 120px;
+  }
+
+  .filter-select:focus {
+    border-color: var(--tower-yellow);
+  }
+
+  .sort-select {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    color: var(--tower-white);
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+  }
+
+  .view-btn {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    color: #888;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .view-btn:first-child { border-right: none; }
+  .view-btn.active {
+    background: var(--tower-yellow);
+    color: var(--tower-black);
+    border-color: var(--tower-yellow);
+  }
+
+  /* === ACTIVE FILTERS === */
+  .active-filters {
+    background: #111;
+    padding: 8px 24px;
+    display: none;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .active-filters.has-filters { display: flex; }
+
+  .filter-tag {
+    background: var(--tower-red);
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .filter-tag:hover { background: #c41e24; }
+  .filter-tag .x { font-weight: bold; }
+
+  .clear-all {
+    color: var(--tower-yellow);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 8px;
+  }
+
+  /* === RECORD GRID === */
+  .main-content {
+    padding: 24px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .results-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .results-count {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .results-count strong {
+    color: var(--tower-yellow);
+    font-size: 18px;
+  }
+
+  .record-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .record-card {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .record-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--tower-yellow);
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.15);
+  }
+
+  .record-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    background: #2a2a2a;
+  }
+
+  .record-info {
+    padding: 12px;
+  }
+
+  .record-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--tower-white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  .record-artist {
+    font-size: 13px;
+    color: var(--tower-yellow);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  .record-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .record-year {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .record-format {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+    background: #2a2a2a;
+    padding: 2px 6px;
+  }
+
+  .record-genre-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  /* Genre colors */
+  .genre-rock { color: var(--tower-red); background: var(--tower-red); }
+  .genre-pop { color: var(--tower-pink); background: var(--tower-pink); }
+  .genre-electronic { color: var(--tower-blue); background: var(--tower-blue); }
+  .genre-hiphop { color: var(--tower-orange); background: var(--tower-orange); }
+  .genre-jazz { color: #9B59B6; background: #9B59B6; }
+  .genre-soul { color: var(--tower-green); background: var(--tower-green); }
+  .genre-stage { color: #FFD700; background: #FFD700; }
+  .genre-other { color: #888; background: #888; }
+
+  /* === DETAIL MODAL === */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--tower-black);
+    border: 2px solid var(--tower-yellow);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--tower-yellow);
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 10;
+    line-height: 1;
+  }
+
+  .modal-cover {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background: #111;
+    display: block;
+  }
+
+  .modal-body {
+    padding: 24px;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--tower-yellow);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .modal-artist {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    color: var(--tower-white);
+    margin-bottom: 16px;
+  }
+
+  .modal-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .detail-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #666;
+  }
+
+  .detail-value {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    color: var(--tower-white);
+  }
+
+  .genre-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .genre-tag {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  /* === JUST SOLD TICKER === */
+  .ticker {
+    background: var(--tower-yellow);
+    color: var(--tower-black);
+    padding: 6px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ticker-content {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .ticker-item { margin-right: 60px; }
+  .ticker-item .sold-label { color: var(--tower-red); font-weight: 700; }
+
+  /* === PAGINATION === */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    padding: 16px 0;
+  }
+
+  .page-btn {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    color: var(--tower-white);
+    padding: 8px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover { border-color: var(--tower-yellow); }
+  .page-btn.active {
+    background: var(--tower-red);
+    border-color: var(--tower-red);
+    color: white;
+  }
+
+  .page-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* === FOOTER === */
+  .footer {
+    background: var(--tower-black);
+    border-top: 3px solid var(--tower-red);
+    padding: 24px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .footer-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #555;
+    text-transform: uppercase;
+  }
+
+  .footer-text a {
+    color: var(--tower-yellow);
+    text-decoration: none;
+  }
+
+  .powered-by {
+    font-size: 11px;
+    color: #444;
+    margin-top: 4px;
+  }
+
+  .powered-by code {
+    color: var(--tower-yellow);
+    background: #1e1e1e;
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<!-- JUST SOLD TICKER -->
+<div class="ticker">
+  <div class="ticker-content">
+    <span class="ticker-item"><span class="sold-label">★ JUST SOLD</span> — Dookie (Green Day) to buyer in Brooklyn</span>
+    <span class="ticker-item"><span class="sold-label">★ JUST SOLD</span> — Abbey Road (The Beatles) to buyer in Austin</span>
+    <span class="ticker-item"><span class="sold-label">★ JUST SOLD</span> — Folklore (Taylor Swift) to buyer in Nashville</span>
+    <span class="ticker-item"><span class="sold-label">★ JUST SOLD</span> — The Wall (Pink Floyd) to buyer in London</span>
+    <span class="ticker-item"><span class="sold-label">★ NOW SPINNING</span> — Gerstman's Records — 248 titles in stock — powered by mongo-autorest</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      GERSTMAN'S<br>RECORDS
+      <span>EST. 2004 • SYRACUSE, NY</span>
+    </div>
+    <div class="header-stats">
+      <div class="stat">
+        <div class="stat-number" id="totalRecords">248</div>
+        <div class="stat-label">Records</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">87</div>
+        <div class="stat-label">Artists</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">8</div>
+        <div class="stat-label">Decades</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-api" onclick="window.open('/docs', '_blank')">📖 API Docs</button>
+      <button class="btn-api" onclick="window.open('/api/openapi.json', '_blank')">{ } OpenAPI</button>
+    </div>
+  </div>
+</header>
+
+<!-- SEARCH & FILTERS -->
+<div class="filter-bar">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search by title, artist, label...">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Genre</span>
+    <select class="filter-select" id="genreFilter">
+      <option value="">All Genres</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Decade</span>
+    <select class="filter-select" id="decadeFilter">
+      <option value="">All Decades</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Artist</span>
+    <select class="filter-select" id="artistFilter">
+      <option value="">All Artists</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Sort</span>
+    <select class="sort-select" id="sortSelect">
+      <option value="artist">Artist A→Z</option>
+      <option value="-artist">Artist Z→A</option>
+      <option value="-year">Newest First</option>
+      <option value="year">Oldest First</option>
+      <option value="title">Title A→Z</option>
+      <option value="dateAdded">Recently Added</option>
+    </select>
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" id="gridBtn" title="Grid View">▦</button>
+    <button class="view-btn" id="listBtn" title="List View">☰</button>
+  </div>
+</div>
+
+<!-- ACTIVE FILTERS -->
+<div class="active-filters" id="activeFilters"></div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <div class="results-info">
+    <div class="results-count">Showing <strong id="showingCount">248</strong> of <strong>248</strong> records</div>
+  </div>
+  <div class="record-grid" id="recordGrid"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <img class="modal-cover" id="modalCover" src="" alt="">
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-artist" id="modalArtist"></div>
+      <div class="modal-details" id="modalDetails"></div>
+      <div style="margin-top:16px; display:flex; gap:12px; align-items:center;">
+        <button id="buyBadge" onclick="buyRecord(filteredRecords[currentModalIndex])" style="background:var(--tower-red);color:white;border:none;padding:10px 24px;font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;">🛒 BUY</button>
+        <span style="font-size:11px;color:#666;letter-spacing:1px;">DEMO • TRIGGERS WEBHOOK</span>
+      </div>
+      <div class="genre-tags" id="modalGenres"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-text">
+    Gerstman's Records — Syracuse, NY — <a href="https://www.discogs.com/user/matthew.gerstman/collection" target="_blank">Discogs Collection</a> — All 248 titles
+  </div>
+  <div class="powered-by">
+    Powered by <code>mongo-autorest</code> — Zero-config REST APIs from MongoDB
+  </div>
+</div>
+
+<script>
+let allRecords = [];
+let filteredRecords = [];
+let currentPage = 1;
+const pageSize = 24;
+
+const genreColorMap = {
+  'Rock': 'genre-rock',
+  'Pop': 'genre-pop',
+  'Electronic': 'genre-electronic',
+  'Hip Hop': 'genre-hiphop',
+  'Jazz': 'genre-jazz',
+  'Funk / Soul': 'genre-soul',
+  'Stage & Screen': 'genre-stage',
+};
+
+function getGenreClass(genres) {
+  for (const g of genres) {
+    if (genreColorMap[g]) return genreColorMap[g];
+  }
+  return 'genre-other';
+}
+
+async function loadRecords() {
+  // Load from the real mongo-autorest API
+  const resp = await fetch('/api/vinyl?pageSize=1000');
+  const result = await resp.json();
+  allRecords = result.data || [];
+  
+  // Populate filter dropdowns
+  const genres = [...new Set(allRecords.flatMap(r => r.genres))].sort();
+  const decades = [...new Set(allRecords.map(r => r.decade).filter(d => d !== 'Unknown'))].sort();
+  const artists = [...new Set(allRecords.map(r => r.artist))].sort();
+  
+  const genreSelect = document.getElementById('genreFilter');
+  genres.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    genreSelect.appendChild(opt);
+  });
+  
+  const decadeSelect = document.getElementById('decadeFilter');
+  decades.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    decadeSelect.appendChild(opt);
+  });
+  
+  const artistSelect = document.getElementById('artistFilter');
+  artists.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    artistSelect.appendChild(opt);
+  });
+  
+  applyFilters();
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const genre = document.getElementById('genreFilter').value;
+  const decade = document.getElementById('decadeFilter').value;
+  const artist = document.getElementById('artistFilter').value;
+  const sort = document.getElementById('sortSelect').value;
+  
+  filteredRecords = allRecords.filter(r => {
+    if (search && !r.title.toLowerCase().includes(search) && 
+        !r.artist.toLowerCase().includes(search) &&
+        !r.label.toLowerCase().includes(search)) return false;
+    if (genre && !r.genres.includes(genre)) return false;
+    if (decade && r.decade !== decade) return false;
+    if (artist && r.artist !== artist) return false;
+    return true;
+  });
+  
+  // Sort
+  const desc = sort.startsWith('-');
+  const field = desc ? sort.slice(1) : sort;
+  filteredRecords.sort((a, b) => {
+    let va = a[field] || '', vb = b[field] || '';
+    if (typeof va === 'number' && typeof vb === 'number') {
+      return desc ? vb - va : va - vb;
+    }
+    va = String(va).toLowerCase();
+    vb = String(vb).toLowerCase();
+    return desc ? vb.localeCompare(va) : va.localeCompare(vb);
+  });
+  
+  currentPage = 1;
+  updateActiveFilters(search, genre, decade, artist);
+  renderRecords();
+}
+
+function updateActiveFilters(search, genre, decade, artist) {
+  const container = document.getElementById('activeFilters');
+  const tags = [];
+  if (search) tags.push({ label: `Search: "${search}"`, clear: () => { document.getElementById('searchInput').value = ''; applyFilters(); }});
+  if (genre) tags.push({ label: genre, clear: () => { document.getElementById('genreFilter').value = ''; applyFilters(); }});
+  if (decade) tags.push({ label: decade, clear: () => { document.getElementById('decadeFilter').value = ''; applyFilters(); }});
+  if (artist) tags.push({ label: artist, clear: () => { document.getElementById('artistFilter').value = ''; applyFilters(); }});
+  
+  container.innerHTML = '';
+  container.className = tags.length ? 'active-filters has-filters' : 'active-filters';
+  
+  tags.forEach(t => {
+    const tag = document.createElement('div');
+    tag.className = 'filter-tag';
+    tag.innerHTML = `${t.label} <span class="x">×</span>`;
+    tag.onclick = t.clear;
+    container.appendChild(tag);
+  });
+  
+  if (tags.length > 1) {
+    const clear = document.createElement('span');
+    clear.className = 'clear-all';
+    clear.textContent = 'Clear all';
+    clear.onclick = () => {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('genreFilter').value = '';
+      document.getElementById('decadeFilter').value = '';
+      document.getElementById('artistFilter').value = '';
+      applyFilters();
+    };
+    container.appendChild(clear);
+  }
+}
+
+function renderRecords() {
+  const grid = document.getElementById('recordGrid');
+  const start = (currentPage - 1) * pageSize;
+  const pageRecords = filteredRecords.slice(start, start + pageSize);
+  
+  document.getElementById('showingCount').textContent = filteredRecords.length;
+  
+  grid.innerHTML = pageRecords.map((r, i) => `
+    <div class="record-card" onclick="openModal(${start + i})">
+      <div class="record-genre-dot ${getGenreClass(r.genres)}"></div>
+      <img class="record-cover" src="${r.coverImage || r.thumb}" alt="${r.title}" 
+           loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%232a2a2a%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23555%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2240%22>♪</text></svg>'">
+      <div class="record-info">
+        <div class="record-title">${r.title}</div>
+        <div class="record-artist">${r.artist}</div>
+        <div class="record-meta">
+          <span class="record-year">${r.year || '—'}</span>
+          <span class="record-format">${r.formats[0] || 'Vinyl'}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  
+  renderPagination();
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredRecords.length / pageSize);
+  const pag = document.getElementById('pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  
+  let html = `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})">← PREV</button>`;
+  
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+      html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    } else if (i === currentPage - 2 || i === currentPage + 2) {
+      html += `<span style="color:#555">...</span>`;
+    }
+  }
+  
+  html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})">NEXT →</button>`;
+  pag.innerHTML = html;
+}
+
+function goToPage(p) {
+  const totalPages = Math.ceil(filteredRecords.length / pageSize);
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderRecords();
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+
+let currentModalIndex = 0;
+function openModal(index) {
+  currentModalIndex = index;
+  const r = filteredRecords[index];
+  if (!r) return;
+  
+  document.getElementById('modalCover').src = r.coverImage || r.thumb;
+  document.getElementById('modalTitle').textContent = r.title;
+  document.getElementById('modalArtist').textContent = r.artist;
+  
+  document.getElementById('modalDetails').innerHTML = `
+    <div class="detail-item"><span class="detail-label">Year</span><span class="detail-value">${r.year || '—'}</span></div>
+    <div class="detail-item"><span class="detail-label">Label</span><span class="detail-value">${r.label}</span></div>
+    <div class="detail-item"><span class="detail-label">Format</span><span class="detail-value">${r.formats.join(', ') || 'Vinyl'}</span></div>
+    <div class="detail-item"><span class="detail-label">Catalog #</span><span class="detail-value">${r.catalogNo || '—'}</span></div>
+    <div class="detail-item"><span class="detail-label">Decade</span><span class="detail-value">${r.decade}</span></div>
+    <div class="detail-item"><span class="detail-label">Added</span><span class="detail-value">${r.dateAdded ? new Date(r.dateAdded).toLocaleDateString() : '—'}</span></div>
+  `;
+  
+  document.getElementById('modalGenres').innerHTML = [...r.genres, ...r.styles].map(g => 
+    `<span class="genre-tag ${getGenreClass([g])}">${g}</span>`
+  ).join('');
+  
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Event listeners
+document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+document.getElementById('genreFilter').addEventListener('change', applyFilters);
+document.getElementById('decadeFilter').addEventListener('change', applyFilters);
+document.getElementById('artistFilter').addEventListener('change', applyFilters);
+document.getElementById('sortSelect').addEventListener('change', applyFilters);
+
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
+
+loadRecords();
+
+  // === SSE: Live "Just Sold" ticker ===
+  const API_KEY = 'gerstmans-demo-key-2024';
+  let evtSource;
+  try {
+    evtSource = new EventSource('/api/live');
+    evtSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'connected') return;
+      if (data.event === 'document.created' && data.collection === 'sales') {
+        const sale = data.data;
+        addTickerItem(sale.title, sale.artist, sale.buyer || 'a collector');
+      }
+    };
+  } catch(e) { console.log('SSE not available'); }
+
+  function addTickerItem(title, artist, buyer) {
+    const ticker = document.querySelector('.ticker-content');
+    const item = document.createElement('span');
+    item.className = 'ticker-item';
+    item.innerHTML = '<span class="sold-label">★ JUST SOLD</span> — ' + title + ' (' + artist + ') to ' + buyer;
+    ticker.prepend(item);
+  }
+
+  // === Buy button handler ===
+  async function buyRecord(record) {
+    try {
+      const resp = await fetch('/api/sales', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY,
+        },
+        body: JSON.stringify({
+          title: record.title,
+          artist: record.artist,
+          buyer: 'Web visitor',
+          purchasedAt: new Date().toISOString(),
+          discogsId: record.discogsId,
+        }),
+      });
+      if (resp.ok) {
+        const badge = document.getElementById('buyBadge');
+        if (badge) { badge.textContent = '✅ SOLD!'; badge.style.background = '#39FF14'; badge.style.color = '#000'; }
+        setTimeout(() => { if (badge) { badge.textContent = '🛒 BUY'; badge.style.background = ''; badge.style.color = ''; }}, 2000);
+      }
+    } catch(e) { console.error('Buy failed', e); }
+  }
+
+</script>
+</body>
+</html>

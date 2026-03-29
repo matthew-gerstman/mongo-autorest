@@ -1,0 +1,17 @@
+{
+  "name": "gerstmans-records",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Demo app: Vinyl record shop powered by mongo-autorest, seeded with a real Discogs collection",
+  "scripts": {
+    "start": "node server.mjs",
+    "seed": "node -e \"import('./seed.mjs').then(m => m.seedDatabase(process.env.MONGO_URI || 'mongodb://localhost:27017/gerstmans_records'))\""
+  },
+  "dependencies": {
+    "fastify": "^4.28.1",
+    "mongo-autorest": "github:matthew-gerstman/mongo-autorest",
+    "mongodb": "^6.12.0",
+    "mongodb-memory-server": "^10.1.2"
+  }
+}
