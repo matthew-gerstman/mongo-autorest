@@ -247,3 +247,27 @@ describe('generateOpenApiSpec', () => {
     expect(schema.required ?? []).not.toContain('optional');
   });
 });
+
+  it('registers collection-level auth scheme when collection has own auth and no global auth', async () => {
+    // collection has its own auth config, but no global auth — scheme should be created
+    const spec = await genSpec(
+      [{ name: 'sg_col_auth', slug: 'col-auth' }],
+      {
+        collections: {
+          sg_col_auth: {
+            auth: { type: 'api-key', header: 'x-col-key', keys: ['k1'] },
+          },
+        },
+      }
+    );
+
+    expect(spec.components.securitySchemes?.['ApiKeyAuth']).toBeDefined();
+    const scheme = spec.components.securitySchemes!['ApiKeyAuth'];
+    expect(scheme.type).toBe('apiKey');
+    expect(scheme.name).toBe('x-col-key');
+    // Per-collection — global security should NOT be set
+    expect(spec.security).toBeUndefined();
+
+    // Validate it still parses
+    await expect(SwaggerParser.validate(JSON.parse(JSON.stringify(spec)) as never)).resolves.toBeDefined();
+  });

@@ -2,7 +2,7 @@ import { type FastifyInstance } from 'fastify';
 import { type Db } from 'mongodb';
 import { type AutoRestConfig } from '../config/index.js';
 import { type CollectionInfo } from '../introspection/index.js';
-import { generateOpenApiSpec } from './spec-generator.js';
+import { generateOpenApiSpec, type OpenApiSpec } from './spec-generator.js';
 
 export interface RegisterOpenApiRoutesOptions {
   db: Db;
@@ -34,20 +34,25 @@ export async function registerOpenApiRoutes(
     return;
   }
 
-  // Generate spec lazily on first request and cache it.
-  // This avoids sampling documents at startup when the spec isn't needed.
-  let cachedSpec: Record<string, unknown> | null = null;
+  // Cache the spec Promise — not the result — so concurrent requests during
+  // the first generation don't trigger multiple DB sampling passes.
+  let specPromise: Promise<OpenApiSpec> | null = null;
 
   fastify.get('/openapi.json', async (_req, reply) => {
-    if (!cachedSpec) {
-      cachedSpec = await generateOpenApiSpec({
+    if (!specPromise) {
+      specPromise = generateOpenApiSpec({
         db,
         config,
         collections,
         prefix,
+      }).catch((err: unknown) => {
+        // Reset on failure so the next request retries
+        specPromise = null;
+        throw err;
       });
     }
-    return reply.code(200).type('application/json').send(cachedSpec);
+    const spec = await specPromise;
+    return reply.code(200).type('application/json').send(spec);
   });
 
   // ── Swagger UI (/docs) ────────────────────────────────────────────────────

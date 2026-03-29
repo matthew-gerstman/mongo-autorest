@@ -6,7 +6,7 @@ export const SAMPLE_LIMIT = 20;
 /**
  * A JSON Schema fragment describing a single field's inferred type.
  * We only produce the subset of JSON Schema that makes sense for
- * MongoDB documents: string, number, boolean, null, array, object, "mixed".
+ * MongoDB documents: string, number, boolean, null, array, object.
  */
 export type JsonSchemaType =
   | 'string'
@@ -43,7 +43,7 @@ export interface InferredSchema {
 export function inferType(value: unknown): JsonSchemaType {
   if (value === null) return 'null';
   if (Array.isArray(value)) return 'array';
-  // Date, ObjectId, Buffer, RegExp etc. → serialize as string in spec
+  // Date must come before the generic object check (typeof Date === 'object')
   if (value instanceof Date) return 'string';
   if (typeof value === 'object') return 'object';
   if (typeof value === 'boolean') return 'boolean';
@@ -51,7 +51,7 @@ export function inferType(value: unknown): JsonSchemaType {
   if (typeof value === 'number') {
     return Number.isInteger(value) ? 'integer' : 'number';
   }
-  // Fallback for Date, ObjectId, Buffer, etc. — serialize to string in spec
+  // Fallback for other special types (ObjectId, Binary, Decimal128, etc.) — serialize as string
   return 'string';
 }
 
@@ -76,7 +76,8 @@ export function mergeDocument(
     seenKeys.add(key);
     const type = inferType(value);
 
-    if (acc[key] === undefined) {
+    const existing = acc[key];
+    if (existing === undefined) {
       // Field seen for the first time.  If total > 0 it was absent in earlier
       // docs, so presentInAll must be false.
       acc[key] = {
@@ -85,16 +86,17 @@ export function mergeDocument(
         seenCount: 1,
       };
     } else {
-      acc[key].types.add(type);
-      acc[key].seenCount += 1;
+      existing.types.add(type);
+      existing.seenCount += 1;
     }
   }
 
   // Any field already tracked but absent from this document can no longer
   // be "present in all".
   for (const key of Object.keys(acc)) {
-    if (!seenKeys.has(key)) {
-      acc[key].presentInAll = false;
+    const field = acc[key];
+    if (field !== undefined && !seenKeys.has(key)) {
+      field.presentInAll = false;
     }
   }
 }
@@ -121,7 +123,10 @@ export async function inferCollectionSchema(
   const fields: Record<string, InferredField> = {};
 
   for (let i = 0; i < docs.length; i++) {
-    mergeDocument(fields, docs[i], i);
+    const doc = docs[i];
+    if (doc !== undefined) {
+      mergeDocument(fields, doc, i);
+    }
   }
 
   return { fields, sampleCount: docs.length };
@@ -135,7 +140,6 @@ export async function inferCollectionSchema(
  *
  * - Single type → `{ type: "string" }` (or whichever type)
  * - Multiple types → `{ anyOf: [{ type: "..." }, ...] }`
- * - null included → nullable via anyOf with `{ type: "null" }`
  */
 export function buildPropertySchema(field: InferredField): Record<string, unknown> {
   const types = Array.from(field.types);
@@ -165,7 +169,7 @@ export function buildSchemaObject(inferred: InferredSchema): Record<string, unkn
   for (const [fieldName, field] of Object.entries(inferred.fields)) {
     properties[fieldName] = buildPropertySchema(field);
 
-    // Present in ≥ 50% of samples → required
+    // Present in > 50% of samples → required
     const threshold = inferred.sampleCount > 0 ? inferred.sampleCount * 0.5 : 0;
     if (field.seenCount > threshold) {
       required.push(fieldName);

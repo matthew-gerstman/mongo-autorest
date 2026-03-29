@@ -411,7 +411,7 @@ export async function generateOpenApiSpec(
     const collectionHasAuth = Boolean(effectiveAuth);
 
     // Register security scheme for collection-level auth (if different header)
-    if (collectionHasAuth && effectiveAuth && effectiveAuth !== true && typeof effectiveAuth === 'object' && !hasGlobalAuth) {
+    if (collectionHasAuth && effectiveAuth && typeof effectiveAuth === 'object' && !hasGlobalAuth) {
       securitySchemes.ApiKeyAuth = {
         type: 'apiKey',
         in: 'header',
@@ -420,12 +420,14 @@ export async function generateOpenApiSpec(
       };
     }
 
-    const [collectionPathItem, documentPathItem] = buildCollectionPaths(
+    const pathItems = buildCollectionPaths(
       slug,
       schemaName,
       collectionReadOnly,
       collectionHasAuth
     );
+    const collectionPathItem = pathItems[0]!;
+    const documentPathItem = pathItems[1]!;
 
     const basePath = `${prefix}/${slug}`;
     paths[basePath] = collectionPathItem;
