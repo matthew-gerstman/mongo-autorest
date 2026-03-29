@@ -12,8 +12,8 @@ Auto-generate RESTful APIs from MongoDB collections via Fastify. Every collectio
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -38,8 +38,8 @@ Auto-generate RESTful APIs from MongoDB collections via Fastify. Every collectio
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -57,8 +57,8 @@ npm install mongo-autorest
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -110,8 +110,8 @@ Collections prefixed with `system.` are excluded automatically.
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -219,8 +219,8 @@ config: {
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -258,8 +258,8 @@ Query parameters: `page`, `pageSize`, `sort`, `filter` — see [Filtering & Pagi
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -285,8 +285,8 @@ Returns a single document. `:id` is the document's `_id` — accepts both Object
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -312,8 +312,8 @@ Inserts a new document. Returns the inserted document with `_id` populated.
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -339,8 +339,8 @@ Replaces the entire document. Returns the updated document. Does **not** upsert 
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -366,8 +366,8 @@ Applies a partial update using `$set`. Returns the updated document.
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -390,8 +390,8 @@ Deletes a document. Returns `204` with no body on success.
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -412,8 +412,8 @@ HTTP 405 Method Not Allowed
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -502,8 +502,8 @@ The response will include `totalEstimated: true` instead of an exact `total`:
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -578,8 +578,8 @@ const { collections } = await introspectDatabase(db, config);
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -689,8 +689,8 @@ interface WebhookConfig {
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -750,8 +750,8 @@ app.autoRestEmitter.on('document.created', ({ collection, document }) => {
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -781,8 +781,8 @@ MongoDB errors are never surfaced raw to the caller. All DB errors are caught, l
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
@@ -800,8 +800,8 @@ MongoDB errors are never surfaced raw to the caller. All DB errors are caught, l
 
 | Demo | Description | Links |
 |------|-------------|-------|
-| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3000.hosted.obvious.ai/docs) · [Source](examples/vinyl-shop/) |
-| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Swagger](https://22x6cm3y0l-3001.hosted.obvious.ai/docs) · [Source](examples/pokedex/) |
+| 🎵 **Gerstman's Records** | Vinyl record shop with 248 records from a real Discogs collection | [App](https://22x6cm3y0l-3000.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3000.hosted.obvious.ai/explorer) · [Source](examples/vinyl-shop/) |
+| 🔴 **Pokédex** | 1,025 Pokémon with battle simulator and team builder | [App](https://22x6cm3y0l-3001.hosted.obvious.ai) · [Explorer](https://22x6cm3y0l-3001.hosted.obvious.ai/explorer) · [Source](examples/pokedex/) |
 
 > Both demos are powered by a single `autoRest` config — no custom routes, no controllers, no models. Just data.
 
