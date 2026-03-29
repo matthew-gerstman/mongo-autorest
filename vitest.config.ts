@@ -16,8 +16,6 @@ export default defineConfig({
         '**/*.spec.ts',
         'vitest.config.ts',
         'tsup.config.ts',
-        // Placeholder modules not yet implemented in this PR
-        'src/openapi/**',
         // Re-export barrel files — nothing to unit test here
         'src/index.ts',
         'src/middleware/index.ts',
