@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokédex — Powered by mongo-autorest</title>
+  <style>
+    /* =============================================
+       DESIGN SYSTEM — Pokédex Red Theme
+       ============================================= */
+    :root {
+      --red: #CC0000;
+      --red-dark: #990000;
+      --red-light: #FF4444;
+      --body-dark: #1a1a2e;
+      --body-mid: #16213e;
+      --panel: #0f3460;
+      --card: #1e2a45;
+      --card-hover: #253555;
+      --text: #e8eaf6;
+      --text-muted: #90a4c0;
+      --border: rgba(255,255,255,0.08);
+      --accent: #e8eaf6;
+      --yellow: #FFD700;
+      --green: #4CAF50;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-lg: 0 8px 48px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--body-dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* =============================================
+       HEADER / POKÉDEX DEVICE TOP
+       ============================================= */
+    header {
+      background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 50%, var(--red-light) 100%);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 24px 10px;
+      border-bottom: 2px solid rgba(0,0,0,0.2);
+    }
+
+    .pokedex-light {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #88ddff, #0088cc);
+      border: 3px solid white;
+      box-shadow: 0 0 12px rgba(0,200,255,0.6), inset 0 0 6px rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+
+    .small-lights {
+      display: flex; gap: 6px; align-items: center;
+    }
+
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.3);
+    }
+    .dot-red { background: #ff6666; }
+    .dot-yellow { background: #ffdd44; }
+    .dot-green { background: #44ff88; }
+
+    .header-title {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .header-title h1 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: white;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+      letter-spacing: -0.5px;
+    }
+
+    .header-title .subtitle {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex; gap: 10px; align-items: center;
+    }
+
+    .btn-docs {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+    .btn-docs:hover { background: rgba(255,255,255,0.25); }
+
+    /* Controls bar */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 320px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 12px 8px 36px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-wrap input::placeholder { color: rgba(255,255,255,0.5); }
+    .search-wrap input:focus { border-color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.35); }
+
+    .search-icon {
+      position: absolute;
+      left: 11px; top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+
+    .control-select {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 28px 8px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='white' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 8px;
+    }
+
+    .count-badge {
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.8);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    /* =============================================
+       LAYOUT
+       ============================================= */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* =============================================
+       SIDEBAR — FILTERS
+       ============================================= */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--body-mid);
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
+      position: sticky;
+      top: 120px;
+    }
+
+    .sidebar-section { margin-bottom: 20px; }
+
+    .sidebar-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .type-btn {
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      opacity: 0.6;
+    }
+    .type-btn.active { opacity: 1; border-color: white; transform: scale(1.05); }
+    .type-btn:hover { opacity: 0.9; }
+
+    .gen-btns { display: flex; flex-direction: column; gap: 4px; }
+
+    .gen-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .gen-btn:hover { background: var(--card-hover); color: var(--text); }
+    .gen-btn.active { background: var(--red); color: white; border-color: var(--red-light); }
+
+    .filter-clear {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 8px;
+    }
+    .filter-clear:hover { border-color: var(--red); color: var(--red-light); }
+
+    /* =============================================
+       MAIN CONTENT
+       ============================================= */
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* =============================================
+       POKÉMON GRID
+       ============================================= */
+    .pokemon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .pokemon-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .pokemon-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border-radius: var(--radius);
+    }
+
+    .pokemon-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: rgba(255,255,255,0.15);
+      background: var(--card-hover);
+    }
+
+    .pokemon-card.selected-battle {
+      border-color: var(--yellow);
+      box-shadow: 0 0 16px rgba(255,215,0,0.4);
+      background: var(--card-hover);
+    }
+
+    .card-number {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card-sprite {
+      width: 88px;
+      height: 88px;
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto 8px;
+      transition: transform 0.2s;
+    }
+    .pokemon-card:hover .card-sprite { transform: scale(1.1); }
+
+    .card-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      margin-bottom: 6px;
+    }
+
+    .type-badges {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .type-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      text-transform: capitalize;
+    }
+
+    .card-battle-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      z-index: 2;
+    }
+    .card-battle-btn:hover { background: var(--red); border-color: var(--red-light); }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      padding-bottom: 20px;
+    }
+
+    .page-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--card-hover); border-color: rgba(255,255,255,0.2); }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .page-btn.active { background: var(--red); border-color: var(--red-light); }
+
+    .page-info { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* =============================================
+       BATTLE PANEL
+       ============================================= */
+    .battle-panel {
+      background: var(--body-mid);
+      border-top: 2px solid var(--border);
+      padding: 0;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .battle-panel.visible { transform: translateY(0); }
+
+    .battle-panel-header {
+      background: linear-gradient(135deg, var(--red-dark), var(--red));
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .battle-panel-header h3 { font-size: 0.95rem; font-weight: 700; flex: 1; }
+
+    .battle-slots {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 24px;
+    }
+
+    .battle-slot {
+      flex: 1;
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .battle-slot.filled {
+      border-style: solid;
+      border-color: var(--yellow);
+    }
+
+    .battle-slot-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .battle-slot img {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+    }
+
+    .battle-slot-info { text-align: left; }
+    .battle-slot-name { font-weight: 700; font-size: 0.9rem; text-transform: capitalize; }
+    .battle-slot-stats { font-size: 0.75rem; color: var(--text-muted); }
+
+    .battle-vs {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--red-light);
+      text-shadow: 0 0 20px rgba(204,0,0,0.5);
+    }
+
+    .btn-battle {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(204,0,0,0.4);
+      white-space: nowrap;
+    }
+    .btn-battle:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(204,0,0,0.5); }
+    .btn-battle:disabled { opacity: 0.4; transform: none; cursor: not-allowed; }
+
+    .btn-clear-battle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    /* =============================================
+       DETAIL MODAL
+       ============================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: grid; }
+
+    .modal {
+      background: var(--body-mid);
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      padding: 24px 28px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      background: var(--body-mid);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    .modal-artwork {
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
+    }
+
+    .modal-title-section { flex: 1; }
+
+    .modal-number {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .modal-name {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: capitalize;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .modal-meta-item {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .modal-meta-item strong { color: var(--text); }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--red); border-color: var(--red-light); }
+
+    .modal-body { padding: 24px 28px; }
+
+    .modal-section { margin-bottom: 24px; }
+
+    .modal-section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Stat bars */
+    .stat-row {
+      display: grid;
+      grid-template-columns: 100px 40px 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .stat-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .stat-bar-wrap {
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .stat-bar {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.6s ease;
+    }
+
+    /* Abilities */
+    .ability-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .ability-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* Moves */
+    .moves-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .move-chip {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .modal-battle-btn {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .modal-battle-btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+    /* =============================================
+       BATTLE RESULT MODAL
+       ============================================= */
+    .battle-result-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 300;
+      display: none;
+      place-items: center;
+      backdrop-filter: blur(8px);
+    }
+    .battle-result-overlay.open { display: grid; }
+
+    .battle-result-modal {
+      background: linear-gradient(135deg, var(--body-mid) 0%, var(--panel) 100%);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 60px rgba(204,0,0,0.3);
+      position: relative;
+    }
+
+    .battle-result-title {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .battle-combatants {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .combatant { text-align: center; }
+
+    .combatant img {
+      width: 100px;
+      height: 100px;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    .combatant.winner img {
+      filter: drop-shadow(0 4px 16px rgba(255,215,0,0.6));
+      transform: scale(1.1);
+    }
+    .combatant.loser img { filter: grayscale(0.5) brightness(0.6); }
+
+    .combatant-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      margin-top: 8px;
+    }
+
+    .winner-label {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--yellow);
+      text-shadow: 0 0 30px rgba(255,215,0,0.6);
+      margin-bottom: 6px;
+    }
+
+    .battle-vs-big {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--red-light);
+    }
+
+    .battle-margin {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .btn-ok {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn-rematch {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    /* =============================================
+       LIVE BATTLE TICKER
+       ============================================= */
+    .ticker-bar {
+      background: var(--body-mid);
+      border-top: 1px solid var(--border);
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.78rem;
+      overflow: hidden;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 40;
+      transition: bottom 0.3s;
+    }
+
+    .ticker-label {
+      background: var(--red);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-content {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      color: var(--text-muted);
+    }
+
+    .ticker-item {
+      display: inline-block;
+      animation: ticker-scroll 8s linear forwards;
+      padding-right: 60px;
+    }
+
+    @keyframes ticker-scroll {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+
+    .ticker-dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* =============================================
+       TEAM BUILDER PANEL
+       ============================================= */
+    .team-panel {
+      background: var(--body-mid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .team-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .team-panel-header h3 { font-size: 0.95rem; font-weight: 700; flex: 1; }
+
+    .team-slots {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .team-slot {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .team-slot.filled {
+      border-style: solid;
+      border-color: var(--green);
+    }
+
+    .team-slot img {
+      width: 56px;
+      height: 56px;
+      image-rendering: pixelated;
+    }
+
+    .team-slot-remove {
+      position: absolute;
+      top: -4px; right: -4px;
+      background: var(--red);
+      border: none;
+      color: white;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .team-actions { display: flex; gap: 8px; }
+
+    .btn-save-team {
+      background: linear-gradient(135deg, #2196F3, #1565C0);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-save-team:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-clear-team {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .team-name-input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: white;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      outline: none;
+      flex: 1;
+    }
+
+    /* Toast notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      box-shadow: var(--shadow);
+      animation: toast-in 0.3s ease;
+      max-width: 300px;
+    }
+
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error { border-left: 3px solid var(--red); }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 20px;
+      background: var(--body-mid);
+      padding: 4px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      border: none;
+      background: transparent;
+    }
+    .tab.active { background: var(--red); color: white; }
+    .tab:hover:not(.active) { color: var(--text); background: var(--card); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .pokemon-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="header-top">
+    <div class="pokedex-light"></div>
+    <div class="small-lights">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+    </div>
+    <div class="header-title">
+      <h1>Pokédex</h1>
+      <span class="subtitle">powered by mongo-autorest</span>
+    </div>
+    <div class="header-actions">
+      <a class="btn-docs" href="/docs" target="_blank">📖 API Docs</a>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search Pokémon..." autocomplete="off" />
+    </div>
+    <select class="control-select" id="sortSelect">
+      <option value="pokedexId:1">Pokédex # ↑</option>
+      <option value="pokedexId:-1">Pokédex # ↓</option>
+      <option value="name:1">Name A–Z</option>
+      <option value="name:-1">Name Z–A</option>
+      <option value="statTotal:-1">Stat Total ↓</option>
+      <option value="hp:-1">HP ↓</option>
+      <option value="attack:-1">Attack ↓</option>
+      <option value="speed:-1">Speed ↓</option>
+    </select>
+    <div class="tabs" style="margin-bottom:0; border:none; background:transparent; padding:0; gap:6px;">
+      <button class="tab active" id="tab-browse" onclick="switchTab('browse')">Browse</button>
+      <button class="tab" id="tab-team" onclick="switchTab('team')">Team Builder</button>
+      <button class="tab" id="tab-battles" onclick="switchTab('battles')">Battle Log</button>
+    </div>
+    <span class="count-badge" id="countBadge">Loading...</span>
+  </div>
+</header>
+
+<!-- ============ APP LAYOUT ============ -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Type</div>
+      <div class="type-grid" id="typeFilters"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Generation</div>
+      <div class="gen-btns" id="genFilters">
+        <button class="gen-btn" data-gen="1">Gen I (Kanto)</button>
+        <button class="gen-btn" data-gen="2">Gen II (Johto)</button>
+        <button class="gen-btn" data-gen="3">Gen III (Hoenn)</button>
+        <button class="gen-btn" data-gen="4">Gen IV (Sinnoh)</button>
+        <button class="gen-btn" data-gen="5">Gen V (Unova)</button>
+        <button class="gen-btn" data-gen="6">Gen VI (Kalos)</button>
+        <button class="gen-btn" data-gen="7">Gen VII (Alola)</button>
+        <button class="gen-btn" data-gen="8">Gen VIII (Galar)</button>
+        <button class="gen-btn" data-gen="9">Gen IX (Paldea)</button>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Specials</div>
+      <div class="gen-btns">
+        <button class="gen-btn" id="legendaryBtn" onclick="toggleLegendary()">⭐ Legendary</button>
+        <button class="gen-btn" id="mythicalBtn" onclick="toggleMythical()">✨ Mythical</button>
+      </div>
+    </div>
+    <button class="filter-clear" onclick="clearFilters()">✕ Clear all filters</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- BROWSE TAB -->
+    <div id="browseTab">
+      <div class="pokemon-grid" id="pokemonGrid">
+        <div class="loading" style="grid-column:1/-1">
+          <div class="spinner"></div>
+          <div>Loading Pokédex...</div>
+        </div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- TEAM BUILDER TAB -->
+    <div id="teamTab" style="display:none;">
+      <div class="team-panel">
+        <div class="team-panel-header">
+          <h3>🏆 Build Your Team</h3>
+          <span style="font-size:0.8rem;color:var(--text-muted)">Click Pokémon below to add to team (max 6)</span>
+        </div>
+        <div class="team-slots" id="teamSlots"></div>
+        <div class="team-actions">
+          <input type="text" class="team-name-input" id="teamNameInput" placeholder="Team name..." />
+          <button class="btn-save-team" id="saveTeamBtn" onclick="saveTeam()" disabled>Save Team</button>
+          <button class="btn-clear-team" onclick="clearTeam()">Clear</button>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">Click any Pokémon to add to your team:</div>
+        <div class="pokemon-grid" id="teamPickerGrid">
+          <div class="loading" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATTLE LOG TAB -->
+    <div id="battlesTab" style="display:none;">
+      <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <h3 style="font-size:1rem;font-weight:700;">⚔️ Battle History</h3>
+        <span style="font-size:0.8rem;color:var(--text-muted)">Stored in MongoDB via <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;">POST /api/battles</code></span>
+        <button class="btn-clear-team" style="margin-left:auto;" onclick="loadBattleLog()">↻ Refresh</button>
+      </div>
+      <div id="battleLogList" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- LIVE BATTLE TICKER -->
+<div class="ticker-bar" id="tickerBar">
+  <div class="ticker-dot"></div>
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-content" id="tickerContent">
+    <span style="color:var(--text-muted)">Connecting to live battle feed...</span>
+  </div>
+</div>
+
+<!-- BATTLE PANEL (bottom tray) -->
+<div class="battle-panel" id="battlePanel">
+  <div class="battle-panel-header" onclick="toggleBattlePanel()">
+    <h3>⚔️ Battle Simulator</h3>
+    <span style="font-size:0.8rem;color:rgba(255,255,255,0.7)">Select 2 Pokémon from the grid</span>
+    <span id="battlePanelToggle">▼</span>
+  </div>
+  <div class="battle-slots" id="battleSlots">
+    <div class="battle-slot" id="slot1">
+      <span style="color:var(--text-muted);font-size:0.8rem;">Select Pokémon 1</span>
+    </div>
+    <div class="battle-vs">VS</div>
+    <div class="battle-slot" id="slot2">
+      <span style="color:var(--text-muted);font-size:0.8rem;">Select Pokémon 2</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn-battle" id="fightBtn" onclick="simulateBattle()" disabled>⚔️ FIGHT!</button>
+      <button class="btn-clear-battle" onclick="clearBattle()">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- BATTLE RESULT MODAL -->
+<div class="battle-result-overlay" id="battleResultModal">
+  <div class="battle-result-modal" id="battleResultContent">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ======================================================
+// STATE
+// ======================================================
+const API = '';
+const API_KEY = 'pokedex-demo-key';
+
+const TYPE_COLORS = {
+  normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
+  grass:'#7AC74C', ice:'#96D9D6', fighting:'#C22E28', poison:'#A33EA1',
+  ground:'#E2BF65', flying:'#A98FF3', psychic:'#F95587', bug:'#A6B91A',
+  rock:'#B6A136', ghost:'#735797', dragon:'#6F35FC', dark:'#705746',
+  steel:'#B7B7CE', fairy:'#D685AD',
+};
+
+let state = {
+  pokemon: [],
+  total: 0,
+  page: 1,
+  pageSize: 24,
+  search: '',
+  sortField: 'pokedexId',
+  sortDir: 1,
+  filterType: null,
+  filterGen: null,
+  filterLegendary: false,
+  filterMythical: false,
+  loading: false,
+  currentTab: 'browse',
+  battleSlots: [null, null],
+  team: [],
+  types: [],
+};
+
+// ======================================================
+// INIT
+// ======================================================
+async function init() {
+  await loadTypes();
+  renderTypeFilters();
+  setupGenFilters();
+  await loadPokemon();
+  connectSSE();
+  renderTeamSlots();
+}
+
+// ======================================================
+// API HELPERS
+// ======================================================
+async function apiFetch(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (opts.auth) headers['x-api-key'] = API_KEY;
+  const res = await fetch(API + path, { ...opts, headers });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json();
+}
+
+// ======================================================
+// LOAD TYPES
+// ======================================================
+async function loadTypes() {
+  try {
+    const res = await apiFetch('/api/types?limit=18');
+    state.types = res.data || [];
+  } catch(e) {
+    console.warn('Could not load types', e);
+  }
+}
+
+// ======================================================
+// LOAD POKÉMON
+// ======================================================
+async function loadPokemon(page = state.page) {
+  state.loading = true;
+  const grid = document.getElementById('pokemonGrid');
+  grid.innerHTML = `<div class="loading" style="grid-column:1/-1"><div class="spinner"></div><div>Loading...</div></div>`;
+
+  const params = new URLSearchParams({
+    page,
+    limit: state.pageSize,
+    sort: state.sortField,
+    sortDir: state.sortDir,
+  });
+
+  if (state.search) params.set('search', state.search);
+  if (state.filterType) params.set('primaryType', state.filterType);
+  if (state.filterGen) params.set('generation', state.filterGen);
+  if (state.filterLegendary) params.set('isLegendary', 'true');
+  if (state.filterMythical) params.set('isMythical', 'true');
+
+  try {
+    const res = await apiFetch(`/api/pokedex?${params}`);
+    state.pokemon = res.data || [];
+    state.total = res.total || 0;
+    state.page = page;
+    renderGrid();
+    renderPagination();
+    document.getElementById('countBadge').textContent = `${state.total.toLocaleString()} Pokémon`;
+  } catch(e) {
+    grid.innerHTML = `<div class="loading" style="grid-column:1/-1;color:#ff6666;">Failed to load Pokémon :(</div>`;
+  }
+  state.loading = false;
+}
+
+// ======================================================
+// RENDER GRID
+// ======================================================
+function renderGrid() {
+  const grid = document.getElementById('pokemonGrid');
+  if (!state.pokemon.length) {
+    grid.innerHTML = `<div class="loading" style="grid-column:1/-1;color:var(--text-muted)">No Pokémon match your filters</div>`;
+    return;
+  }
+  grid.innerHTML = state.pokemon.map(p => renderCard(p, 'battle')).join('');
+}
+
+function renderCard(p, context = 'battle') {
+  const isSelected = state.battleSlots.some(s => s && s.pokedexId === p.pokedexId);
+  const inTeam = state.team.some(t => t.pokedexId === p.pokedexId);
+  const badges = p.types.map(t =>
+    `<span class="type-badge" style="background:${TYPE_COLORS[t] || '#999'}">${t}</span>`
+  ).join('');
+
+  const clickFn = context === 'team'
+    ? `addToTeam(${JSON.stringify(p).replace(/"/g, '&quot;')})`
+    : `openModal(${p.pokedexId})`;
+
+  return `
+    <div class="pokemon-card ${isSelected ? 'selected-battle' : ''}"
+         onclick="${clickFn}" title="${p.name}">
+      ${context === 'battle' ? `<button class="card-battle-btn" onclick="event.stopPropagation();selectForBattle(${p.pokedexId})" title="Add to battle">⚔️</button>` : ''}
+      <div class="card-number">#${String(p.pokedexId).padStart(4,'0')}</div>
+      <img class="card-sprite" src="${p.sprite}" alt="${p.name}" loading="lazy"
+           onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'"/>
+      <div class="card-name">${p.name}</div>
+      <div class="type-badges">${badges}</div>
+      ${inTeam && context === 'team' ? '<div style="font-size:0.65rem;color:var(--green);margin-top:4px;">✓ In team</div>' : ''}
+    </div>
+  `;
+}
+
+// ======================================================
+// PAGINATION
+// ======================================================
+function renderPagination() {
+  const total = state.total;
+  const pages = Math.ceil(total / state.pageSize);
+  const cur = state.page;
+  const el = document.getElementById('pagination');
+
+  if (pages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="loadPokemon(1)" ${cur===1?'disabled':''}>«</button>`;
+  html += `<button class="page-btn" onclick="loadPokemon(${cur-1})" ${cur===1?'disabled':''}>‹</button>`;
+
+  const range = [];
+  for (let i = Math.max(1, cur-2); i <= Math.min(pages, cur+2); i++) range.push(i);
+  if (range[0] > 1) html += `<span class="page-info">...</span>`;
+  for (const p of range) {
+    html += `<button class="page-btn ${p===cur?'active':''}" onclick="loadPokemon(${p})">${p}</button>`;
+  }
+  if (range[range.length-1] < pages) html += `<span class="page-info">...</span>`;
+
+  html += `<button class="page-btn" onclick="loadPokemon(${cur+1})" ${cur===pages?'disabled':''}>›</button>`;
+  html += `<button class="page-btn" onclick="loadPokemon(${pages})" ${cur===pages?'disabled':''}>»</button>`;
+  html += `<span class="page-info">${cur} / ${pages}</span>`;
+  el.innerHTML = html;
+}
+
+// ======================================================
+// TYPE FILTERS
+// ======================================================
+function renderTypeFilters() {
+  const el = document.getElementById('typeFilters');
+  const types = Object.entries(TYPE_COLORS);
+  el.innerHTML = types.map(([t, c]) => `
+    <button class="type-btn" style="background:${c};"
+            data-type="${t}" onclick="filterByType('${t}')">${t}</button>
+  `).join('');
+}
+
+function filterByType(type) {
+  state.filterType = state.filterType === type ? null : type;
+  document.querySelectorAll('.type-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.type === state.filterType);
+  });
+  state.page = 1;
+  loadPokemon();
+}
+
+// ======================================================
+// GEN FILTERS
+// ======================================================
+function setupGenFilters() {
+  document.querySelectorAll('.gen-btn[data-gen]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gen = parseInt(btn.dataset.gen);
+      state.filterGen = state.filterGen === gen ? null : gen;
+      document.querySelectorAll('.gen-btn[data-gen]').forEach(b =>
+        b.classList.toggle('active', parseInt(b.dataset.gen) === state.filterGen)
+      );
+      state.page = 1;
+      loadPokemon();
+    });
+  });
+}
+
+function toggleLegendary() {
+  state.filterLegendary = !state.filterLegendary;
+  state.filterMythical = false;
+  document.getElementById('legendaryBtn').classList.toggle('active', state.filterLegendary);
+  document.getElementById('mythicalBtn').classList.remove('active');
+  state.page = 1;
+  loadPokemon();
+}
+
+function toggleMythical() {
+  state.filterMythical = !state.filterMythical;
+  state.filterLegendary = false;
+  document.getElementById('mythicalBtn').classList.toggle('active', state.filterMythical);
+  document.getElementById('legendaryBtn').classList.remove('active');
+  state.page = 1;
+  loadPokemon();
+}
+
+function clearFilters() {
+  state.filterType = null;
+  state.filterGen = null;
+  state.filterLegendary = false;
+  state.filterMythical = false;
+  document.querySelectorAll('.type-btn, .gen-btn').forEach(b => b.classList.remove('active'));
+  state.page = 1;
+  loadPokemon();
+}
+
+// ======================================================
+// SEARCH + SORT
+// ======================================================
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.search = e.target.value.trim();
+    state.page = 1;
+    loadPokemon();
+  }, 350);
+});
+
+document.getElementById('sortSelect').addEventListener('change', e => {
+  const [field, dir] = e.target.value.split(':');
+  state.sortField = field;
+  state.sortDir = parseInt(dir);
+  state.page = 1;
+  loadPokemon();
+});
+
+// ======================================================
+// TABS
+// ======================================================
+function switchTab(tab) {
+  state.currentTab = tab;
+  document.getElementById('browseTab').style.display = tab === 'browse' ? '' : 'none';
+  document.getElementById('teamTab').style.display = tab === 'team' ? '' : 'none';
+  document.getElementById('battlesTab').style.display = tab === 'battles' ? '' : 'none';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+
+  if (tab === 'team') renderTeamPickerGrid();
+  if (tab === 'battles') loadBattleLog();
+}
+
+// ======================================================
+// DETAIL MODAL
+// ======================================================
+async function openModal(pokedexId) {
+  const overlay = document.getElementById('detailModal');
+  const content = document.getElementById('modalContent');
+  overlay.classList.add('open');
+  content.innerHTML = `<div class="loading" style="padding:60px"><div class="spinner"></div></div>`;
+
+  try {
+    // Fetch from the aliased endpoint
+    const res = await apiFetch(`/api/pokedex?pokedexId=${pokedexId}&limit=1`);
+    const p = res.data[0];
+    if (!p) throw new Error('Not found');
+    renderModal(p);
+  } catch(e) {
+    content.innerHTML = `<div class="loading"><p style="color:#ff6666">Failed to load</p></div>`;
+  }
+}
+
+function renderModal(p) {
+  const content = document.getElementById('modalContent');
+
+  const STAT_COLORS = {
+    hp: '#FF6B6B', attack: '#FF9F43', defense: '#48DBFB',
+    specialAttack: '#A29BFE', specialDefense: '#6C5CE7', speed: '#00CEC9',
+  };
+  const STAT_MAX = { hp: 255, attack: 190, defense: 230, specialAttack: 194, specialDefense: 230, speed: 200 };
+  const STAT_LABELS = {
+    hp: 'HP', attack: 'Attack', defense: 'Defense',
+    specialAttack: 'Sp. Atk', specialDefense: 'Sp. Def', speed: 'Speed',
+  };
+
+  const stats = ['hp','attack','defense','specialAttack','specialDefense','speed'];
+  const statBars = stats.map(s => {
+    const val = p[s] || 0;
+    const pct = Math.round((val / STAT_MAX[s]) * 100);
+    const color = STAT_COLORS[s];
+    return `
+      <div class="stat-row">
+        <div class="stat-label">${STAT_LABELS[s]}</div>
+        <div class="stat-val" style="color:${color}">${val}</div>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar" style="width:${pct}%;background:${color}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const typeBadges = p.types.map(t =>
+    `<span class="type-badge" style="background:${TYPE_COLORS[t]||'#999'};font-size:0.9rem;padding:4px 12px">${t}</span>`
+  ).join('');
+
+  const abilities = p.abilities.map(a =>
+    `<span class="ability-chip">${a}</span>`
+  ).join('');
+
+  const moves = (p.moves || []).slice(0, 15).map(m =>
+    `<span class="move-chip">${m}</span>`
+  ).join('');
+
+  const genNames = ['','Kanto','Johto','Hoenn','Sinnoh','Unova','Kalos','Alola','Galar','Paldea'];
+  const genLabel = `Gen ${['I','II','III','IV','V','VI','VII','VIII','IX'][p.generation-1] || p.generation} (${genNames[p.generation] || ''})`;
+
+  content.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <img class="modal-artwork" src="${p.officialArtwork || p.sprite}" alt="${p.name}"
+           onerror="this.src='${p.sprite}'" />
+      <div class="modal-title-section">
+        <div class="modal-number">#${String(p.pokedexId).padStart(4,'0')}</div>
+        <div class="modal-name">${p.name}</div>
+        <div class="type-badges" style="justify-content:flex-start;">${typeBadges}</div>
+        <div class="modal-meta">
+          <div class="modal-meta-item">⚖️ <strong>${(p.weight/10).toFixed(1)} kg</strong></div>
+          <div class="modal-meta-item">📏 <strong>${(p.height/10).toFixed(1)} m</strong></div>
+          <div class="modal-meta-item">🌍 <strong>${genLabel}</strong></div>
+          <div class="modal-meta-item">⭐ <strong>${p.statTotal} BST</strong></div>
+          ${p.isLegendary ? '<div class="modal-meta-item">🏆 <strong>Legendary</strong></div>' : ''}
+          ${p.isMythical ? '<div class="modal-meta-item">✨ <strong>Mythical</strong></div>' : ''}
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Base Stats — Total: ${p.statTotal}</div>
+        ${statBars}
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Abilities</div>
+        <div class="ability-chips">${abilities}</div>
+      </div>
+      ${p.baseExperience ? `<div class="modal-section">
+        <div class="modal-section-title">Base Experience</div>
+        <div style="font-size:0.9rem">${p.baseExperience} XP</div>
+      </div>` : ''}
+      ${moves ? `<div class="modal-section">
+        <div class="modal-section-title">Moves (${p.moveCount} total, showing first 15)</div>
+        <div class="moves-list">${moves}</div>
+      </div>` : ''}
+      <div class="modal-section">
+        <div class="modal-section-title">Battle & Team Actions</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="modal-battle-btn" onclick="selectForBattle(${p.pokedexId});closeModal()">
+            ⚔️ Add to Battle
+          </button>
+          <button class="modal-battle-btn" style="background:linear-gradient(135deg,#2196F3,#1565C0);"
+                  onclick="addToTeam(${JSON.stringify(p).replace(/"/g,'&quot;')});closeModal()">
+            🏆 Add to Team
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function closeModal(event) {
+  if (event && event.target !== document.getElementById('detailModal')) return;
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+// ======================================================
+// BATTLE SIMULATOR
+// ======================================================
+function selectForBattle(pokedexId) {
+  const p = state.pokemon.find(x => x.pokedexId === pokedexId);
+  if (!p) return;
+
+  if (state.battleSlots[0] && state.battleSlots[0].pokedexId === pokedexId) {
+    state.battleSlots[0] = null;
+  } else if (state.battleSlots[1] && state.battleSlots[1].pokedexId === pokedexId) {
+    state.battleSlots[1] = null;
+  } else if (!state.battleSlots[0]) {
+    state.battleSlots[0] = p;
+  } else if (!state.battleSlots[1]) {
+    state.battleSlots[1] = p;
+  } else {
+    state.battleSlots[0] = state.battleSlots[1];
+    state.battleSlots[1] = p;
+  }
+
+  renderBattlePanel();
+  renderGrid();
+}
+
+function renderBattlePanel() {
+  const panel = document.getElementById('battlePanel');
+  const [p1, p2] = state.battleSlots;
+  const hasBoth = p1 && p2;
+
+  // Show/hide panel
+  panel.classList.toggle('visible', !!(p1 || p2));
+
+  // Update ticker bar bottom offset
+  document.getElementById('tickerBar').style.bottom = panel.classList.contains('visible') ? '150px' : '0';
+
+  // Render slots
+  const renderSlot = (p, idx) => {
+    if (!p) return `<span style="color:var(--text-muted);font-size:0.8rem;">Select Pokémon ${idx+1}</span>`;
+    return `
+      <div class="battle-slot-inner">
+        <img src="${p.sprite}" alt="${p.name}" style="width:48px;height:48px;image-rendering:pixelated">
+        <div class="battle-slot-info">
+          <div class="battle-slot-name">${p.name}</div>
+          <div class="battle-slot-stats">BST: ${p.statTotal} · Spd: ${p.speed}</div>
+          <div class="type-badges" style="margin-top:3px">
+            ${p.types.map(t=>`<span class="type-badge" style="background:${TYPE_COLORS[t]||'#999'}">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  document.getElementById('slot1').className = `battle-slot ${p1?'filled':''}`;
+  document.getElementById('slot1').innerHTML = renderSlot(p1, 0);
+  document.getElementById('slot2').className = `battle-slot ${p2?'filled':''}`;
+  document.getElementById('slot2').innerHTML = renderSlot(p2, 1);
+  document.getElementById('fightBtn').disabled = !hasBoth;
+}
+
+function toggleBattlePanel() {
+  // visual toggle only
+}
+
+function clearBattle() {
+  state.battleSlots = [null, null];
+  renderBattlePanel();
+  renderGrid();
+}
+
+async function simulateBattle() {
+  const [p1, p2] = state.battleSlots;
+  if (!p1 || !p2) return;
+
+  // Stat-based simulation with randomness
+  const calcScore = (p) => {
+    const weights = { hp: 0.15, attack: 0.25, defense: 0.15, specialAttack: 0.2, specialDefense: 0.1, speed: 0.15 };
+    let score = 0;
+    for (const [stat, w] of Object.entries(weights)) {
+      score += (p[stat] || 0) * w;
+    }
+    // Add 0-20% randomness
+    score *= (0.9 + Math.random() * 0.2);
+    return score;
+  };
+
+  const score1 = calcScore(p1);
+  const score2 = calcScore(p2);
+  const winner = score1 >= score2 ? p1 : p2;
+  const loser = winner === p1 ? p2 : p1;
+  const margin = Math.round(Math.abs(score1 - score2));
+
+  // POST to /api/battles (requires auth)
+  const battleData = {
+    winner: winner.name,
+    winnerId: winner.pokedexId,
+    loser: loser.name,
+    loserId: loser.pokedexId,
+    winnerScore: Math.round(Math.max(score1, score2)),
+    loserScore: Math.round(Math.min(score1, score2)),
+    margin,
+    timestamp: new Date().toISOString(),
+  };
+
+  try {
+    await apiFetch('/api/battles', {
+      method: 'POST',
+      auth: true,
+      body: JSON.stringify(battleData),
+    });
+  } catch(e) {
+    console.warn('Could not save battle result', e);
+  }
+
+  showBattleResult(winner, loser, margin);
+}
+
+function showBattleResult(winner, loser, margin) {
+  const overlay = document.getElementById('battleResultModal');
+  const content = document.getElementById('battleResultContent');
+
+  content.innerHTML = `
+    <div class="battle-result-title">⚔️ Battle Result</div>
+    <div class="combatants">
+      <div class="combatant winner">
+        <img src="${winner.officialArtwork || winner.sprite}" alt="${winner.name}">
+        <div class="combatant-name">${winner.name}</div>
+        <div style="font-size:0.7rem;color:var(--text-muted)">BST ${winner.statTotal}</div>
+      </div>
+      <div>
+        <div class="winner-label">🏆 WIN!</div>
+        <div style="font-size:0.8rem;color:var(--text-muted)">vs</div>
+      </div>
+      <div class="combatant loser">
+        <img src="${loser.officialArtwork || loser.sprite}" alt="${loser.name}">
+        <div class="combatant-name">${loser.name}</div>
+        <div style="font-size:0.7rem;color:var(--text-muted)">BST ${loser.statTotal}</div>
+      </div>
+    </div>
+    <div class="battle-margin">
+      <strong>${winner.name}</strong> wins by ${margin} points
+      · Saved to <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px">/api/battles</code> via POST
+    </div>
+    <div>
+      <button class="btn-ok" onclick="closeBattleResult()">OK</button>
+      <button class="btn-rematch" onclick="closeBattleResult();simulateBattle()">↻ Rematch</button>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+
+function closeBattleResult() {
+  document.getElementById('battleResultModal').classList.remove('open');
+  clearBattle();
+}
+
+// ======================================================
+// TEAM BUILDER
+// ======================================================
+async function renderTeamPickerGrid() {
+  const grid = document.getElementById('teamPickerGrid');
+  if (!state.pokemon.length) await loadPokemon();
+  grid.innerHTML = state.pokemon.map(p => renderCard(p, 'team')).join('');
+}
+
+function addToTeam(p) {
+  if (state.team.some(x => x.pokedexId === p.pokedexId)) {
+    showToast(`${p.name} is already on your team`, 'error');
+    return;
+  }
+  if (state.team.length >= 6) {
+    showToast('Team is full! (max 6)', 'error');
+    return;
+  }
+  state.team.push(p);
+  renderTeamSlots();
+  renderTeamPickerGrid();
+  document.getElementById('saveTeamBtn').disabled = state.team.length === 0;
+}
+
+function removeFromTeam(idx) {
+  state.team.splice(idx, 1);
+  renderTeamSlots();
+  renderTeamPickerGrid();
+  document.getElementById('saveTeamBtn').disabled = state.team.length === 0;
+}
+
+function renderTeamSlots() {
+  const el = document.getElementById('teamSlots');
+  const slots = [];
+  for (let i = 0; i < 6; i++) {
+    const p = state.team[i];
+    if (p) {
+      slots.push(`
+        <div class="team-slot filled" title="${p.name}">
+          <img src="${p.sprite}" alt="${p.name}">
+          <button class="team-slot-remove" onclick="removeFromTeam(${i})">✕</button>
+        </div>
+      `);
+    } else {
+      slots.push(`<div class="team-slot">${i+1}</div>`);
+    }
+  }
+  el.innerHTML = slots.join('');
+}
+
+function clearTeam() {
+  state.team = [];
+  renderTeamSlots();
+  if (state.currentTab === 'team') renderTeamPickerGrid();
+  document.getElementById('saveTeamBtn').disabled = true;
+}
+
+async function saveTeam() {
+  if (!state.team.length) return;
+  const name = document.getElementById('teamNameInput').value.trim() || 'My Team';
+  const teamData = {
+    name,
+    pokemon: state.team.map(p => ({ id: p.pokedexId, name: p.name, types: p.types })),
+    totalBST: state.team.reduce((s, p) => s + p.statTotal, 0),
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    await apiFetch('/api/teams', {
+      method: 'POST',
+      auth: true,
+      body: JSON.stringify(teamData),
+    });
+    showToast(`✅ Team "${name}" saved!`, 'success');
+    clearTeam();
+  } catch(e) {
+    showToast('Failed to save team', 'error');
+  }
+}
+
+// ======================================================
+// BATTLE LOG
+// ======================================================
+async function loadBattleLog() {
+  const el = document.getElementById('battleLogList');
+  el.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+
+  try {
+    const res = await apiFetch('/api/battles?limit=20&sort=timestamp&sortDir=-1', { auth: true });
+    const battles = res.data || [];
+
+    if (!battles.length) {
+      el.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px">
+        No battles yet! Use the Battle Simulator to fight some Pokémon.
+      </div>`;
+      return;
+    }
+
+    el.innerHTML = battles.map(b => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:16px;">
+        <div style="font-size:1.2rem">⚔️</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.9rem;">
+            <span style="color:var(--yellow)">🏆 ${b.winner}</span>
+            <span style="color:var(--text-muted);margin:0 6px">defeated</span>
+            ${b.loser}
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px;">
+            Margin: ${b.margin || '?'} pts ·
+            ${b.timestamp ? new Date(b.timestamp).toLocaleString() : ''}
+          </div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-align:right;">
+          <div style="color:var(--green)">${b.winnerScore || '—'}</div>
+          <div>vs ${b.loserScore || '—'}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    el.innerHTML = `<div style="color:var(--red-light);text-align:center;padding:40px">Failed to load battle log</div>`;
+  }
+}
+
+// ======================================================
+// SSE — LIVE BATTLE TICKER
+// ======================================================
+function connectSSE() {
+  const ticker = document.getElementById('tickerContent');
+  try {
+    const es = new EventSource('/api/live');
+
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.type === 'connected') {
+        ticker.innerHTML = `<span style="color:var(--text-muted)">Waiting for battles...</span>`;
+        return;
+      }
+      if (data.type === 'battle' && data.document) {
+        const doc = data.document;
+        const msg = `⚔️ ${doc.winner || '?'} defeated ${doc.loser || '?'}!`;
+        ticker.innerHTML = `<span class="ticker-item">${msg}</span>`;
+        // Refresh battle log if visible
+        if (state.currentTab === 'battles') loadBattleLog();
+      }
+    };
+
+    es.onerror = () => {
+      ticker.innerHTML = `<span style="color:var(--text-muted)">Battle feed offline</span>`;
+    };
+  } catch(e) {
+    ticker.innerHTML = `<span style="color:var(--text-muted)">SSE not available</span>`;
+  }
+}
+
+// ======================================================
+// TOAST
+// ======================================================
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+// ======================================================
+// START
+// ======================================================
+init();
+</script>
+
+</body>
+</html>
