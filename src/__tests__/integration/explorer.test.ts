@@ -195,7 +195,11 @@ describe('/explorer — respects excluded collections', () => {
   });
 });
 
-describe('/explorer — auth enforcement', () => {
+describe('/explorer — publicly accessible even when auth is configured', () => {
+  // Explorer routes bypass auth entirely. The /explorer HTML page and
+  // /explorer-api/collections metadata endpoint are public — just like Swagger UI.
+  // The explorer's client-side JS fetches /api/* routes which DO require auth,
+  // and the UI exposes an API key input field for that purpose.
   let app: FastifyInstance;
 
   beforeAll(async () => {
@@ -212,21 +216,13 @@ describe('/explorer — auth enforcement', () => {
 
   afterAll(async () => { await app.close(); });
 
-  it('returns 401 for /explorer without api key', async () => {
+  it('returns 200 for /explorer WITHOUT any api key (public)', async () => {
     const res = await app.inject({ method: 'GET', url: '/explorer' });
-    expect(res.statusCode).toBe(401);
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toContain('text/html');
   });
 
-  it('returns 403 for /explorer with wrong api key', async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: '/explorer',
-      headers: { 'x-api-key': 'wrong-key' },
-    });
-    expect(res.statusCode).toBe(403);
-  });
-
-  it('returns 200 for /explorer with valid api key', async () => {
+  it('returns 200 for /explorer WITH a valid api key', async () => {
     const res = await app.inject({
       method: 'GET',
       url: '/explorer',
@@ -235,12 +231,14 @@ describe('/explorer — auth enforcement', () => {
     expect(res.statusCode).toBe(200);
   });
 
-  it('returns 401 for /explorer-api/collections without api key', async () => {
+  it('returns 200 for /explorer-api/collections WITHOUT any api key (public)', async () => {
     const res = await app.inject({ method: 'GET', url: '/explorer-api/collections' });
-    expect(res.statusCode).toBe(401);
+    expect(res.statusCode).toBe(200);
+    const body = res.json<{ collections: unknown[] }>();
+    expect(Array.isArray(body.collections)).toBe(true);
   });
 
-  it('returns 200 for /explorer-api/collections with valid api key', async () => {
+  it('returns 200 for /explorer-api/collections WITH a valid api key', async () => {
     const res = await app.inject({
       method: 'GET',
       url: '/explorer-api/collections',
@@ -250,12 +248,31 @@ describe('/explorer — auth enforcement', () => {
   });
 
   it('HTML includes api-key-input field when auth is configured', async () => {
+    const res = await app.inject({ method: 'GET', url: '/explorer' });
+    expect(res.body).toContain('api-key-input');
+  });
+
+  it('/api/* data routes still require auth (401 without key)', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/pokemon' });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('/api/* data routes still require auth (403 with wrong key)', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/explorer',
+      url: '/api/pokemon',
+      headers: { 'x-api-key': 'wrong-key' },
+    });
+    expect(res.statusCode).toBe(403);
+  });
+
+  it('/api/* data routes work with valid key', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/pokemon',
       headers: { 'x-api-key': 'test-secret-key' },
     });
-    expect(res.body).toContain('api-key-input');
+    expect(res.statusCode).toBe(200);
   });
 });
 

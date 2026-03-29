@@ -159,7 +159,11 @@ describe('registerExplorerRoutes', () => {
     });
   });
 
-  describe('auth enforcement', () => {
+  describe('publicly accessible even when auth is configured', () => {
+    // Explorer routes bypass auth entirely — same philosophy as Swagger UI.
+    // /explorer and /explorer-api/collections serve the UI shell and collection
+    // metadata; neither exposes sensitive data. The explorer UI has an API key
+    // input field for authenticating the /api/* data fetches client-side.
     let app: FastifyInstance;
     beforeAll(async () => {
       app = await buildApp(
@@ -172,21 +176,13 @@ describe('registerExplorerRoutes', () => {
     });
     afterAll(async () => { await app.close(); });
 
-    it('returns 401 without api key for /explorer', async () => {
+    it('returns 200 for /explorer WITHOUT any api key (public)', async () => {
       const res = await app.inject({ method: 'GET', url: '/explorer' });
-      expect(res.statusCode).toBe(401);
+      expect(res.statusCode).toBe(200);
+      expect(res.headers['content-type']).toContain('text/html');
     });
 
-    it('returns 403 with wrong api key for /explorer', async () => {
-      const res = await app.inject({
-        method: 'GET',
-        url: '/explorer',
-        headers: { 'x-api-key': 'wrong-key' },
-      });
-      expect(res.statusCode).toBe(403);
-    });
-
-    it('returns 200 with valid api key for /explorer', async () => {
+    it('returns 200 for /explorer WITH a valid api key', async () => {
       const res = await app.inject({
         method: 'GET',
         url: '/explorer',
@@ -195,21 +191,32 @@ describe('registerExplorerRoutes', () => {
       expect(res.statusCode).toBe(200);
     });
 
-    it('returns 401 without api key for /explorer-api/collections', async () => {
-      const res = await app.inject({ method: 'GET', url: '/explorer-api/collections' });
-      expect(res.statusCode).toBe(401);
+    it('returns 200 for /explorer WITH a wrong api key (still public)', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/explorer',
+        headers: { 'x-api-key': 'wrong-key' },
+      });
+      expect(res.statusCode).toBe(200);
     });
 
-    it('returns 403 with wrong api key for /explorer-api/collections', async () => {
+    it('returns 200 for /explorer-api/collections WITHOUT any api key (public)', async () => {
+      const res = await app.inject({ method: 'GET', url: '/explorer-api/collections' });
+      expect(res.statusCode).toBe(200);
+      const body = res.json<{ collections: unknown[] }>();
+      expect(Array.isArray(body.collections)).toBe(true);
+    });
+
+    it('returns 200 for /explorer-api/collections WITH a wrong api key (still public)', async () => {
       const res = await app.inject({
         method: 'GET',
         url: '/explorer-api/collections',
         headers: { 'x-api-key': 'wrong-key' },
       });
-      expect(res.statusCode).toBe(403);
+      expect(res.statusCode).toBe(200);
     });
 
-    it('returns 200 with valid api key for /explorer-api/collections', async () => {
+    it('returns 200 for /explorer-api/collections WITH a valid api key', async () => {
       const res = await app.inject({
         method: 'GET',
         url: '/explorer-api/collections',

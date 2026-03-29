@@ -3,7 +3,6 @@ import { type Db } from 'mongodb';
 import { type AutoRestConfig } from '../config/index.js';
 import { type CollectionInfo } from '../introspection/index.js';
 import { inferCollectionSchema, buildSchemaObject } from '../openapi/inference.js';
-import { createAuthHook } from '../middleware/auth.js';
 import { renderExplorerPage } from './template.js';
 
 export interface CollectionManifestEntry {
@@ -38,11 +37,12 @@ export async function registerExplorerRoutes(
 
   if (!shouldServeExplorer) return;
 
+  // Explorer routes are intentionally public — no auth hook applied here.
+  // The /explorer HTML page and /explorer-api/collections metadata endpoint
+  // do not expose sensitive data (they serve the UI shell and collection names).
+  // The explorer's client-side JS fetches from /api/* routes which DO enforce
+  // auth via the API key input field in the explorer UI.
   await fastify.register(async (scopedPlugin: FastifyInstance) => {
-    if (config.auth) {
-      scopedPlugin.addHook('onRequest', createAuthHook(config.auth));
-    }
-
     scopedPlugin.get('/explorer', async (_req, reply) => {
       const html = renderExplorerPage({
         title: config.explorerOptions?.title ?? 'API Explorer',
